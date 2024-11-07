@@ -14,13 +14,13 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.black,
         scaffoldBackgroundColor: Colors.white,
         textTheme: TextTheme(
-          bodyMedium: TextStyle(color: Colors.black), // Updated from bodyText2 to bodyMedium
+          bodyMedium: TextStyle(color: Colors.black), 
         ),
         appBarTheme: AppBarTheme(color: Colors.black),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.black, // Button background color (updated from primary)
-            foregroundColor: Colors.white, // Button text color (updated from onPrimary)
+            backgroundColor: Colors.black, 
+            foregroundColor: Colors.white, 
           ),
         ),
       ),
