@@ -1,6 +1,7 @@
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:async';
 
 class RFIDService {
   SerialPort? _serialPort;
