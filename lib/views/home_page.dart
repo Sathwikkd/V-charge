@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:v_charge/services/rfid_services.dart';
+import 'package:v_charge/views/history_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -149,7 +150,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         title: const Text("V-Charge", style: TextStyle(color: Colors.white)),
+        actions:const [
+          Padding(
+            padding:  EdgeInsets.only(right: 20),
+            child: IconButton(onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>HistoryPage()))
+            }, icon: Icon(Icons.history))
+            
+            
+          ),
+        ],
       ),
       body: isloading
           ? const Center(child: CircularProgressIndicator())
