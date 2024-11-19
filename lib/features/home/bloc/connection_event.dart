@@ -4,4 +4,7 @@ part of 'connection_bloc.dart';
 sealed class ConnectionEvent {}
 
 
-class ConnectToMachineEvent extends ConnectionEvent{}
+class ConnectToMachineEvent extends ConnectionEvent{
+  final String address;
+  ConnectToMachineEvent({required this.address});
+}

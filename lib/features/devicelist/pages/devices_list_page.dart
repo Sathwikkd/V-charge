@@ -64,11 +64,22 @@ class _DevicesListPageState extends State<DevicesListPage> {
                   child: ListView.builder(
                     itemCount: state.devices.length,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(state.devices[index].name.toString()),
-                        subtitle: Text(state.devices[index].address),
-                        leading: const Icon(Icons.bluetooth),
-                        trailing: const Icon(Icons.arrow_outward_rounded),
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            "/home",
+                            arguments: ArgsBlu(
+                              address: state.devices[index].address,
+                            ),
+                          );
+                        },
+                        child: ListTile(
+                          title: Text(state.devices[index].name.toString()),
+                          subtitle: Text(state.devices[index].address),
+                          leading: const Icon(Icons.bluetooth),
+                          trailing: const Icon(Icons.arrow_outward_rounded),
+                        ),
                       );
                     },
                   ),
@@ -97,4 +108,9 @@ class _DevicesListPageState extends State<DevicesListPage> {
       ),
     );
   }
+}
+
+class ArgsBlu {
+  final String address;
+  ArgsBlu({required this.address});
 }

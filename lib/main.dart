@@ -6,6 +6,8 @@ import 'package:sathwik_app/features/auth/bloc/auth_bloc.dart';
 import 'package:sathwik_app/features/auth/pages/login.dart';
 import 'package:sathwik_app/features/devicelist/bloc/device_bloc.dart';
 import 'package:sathwik_app/features/devicelist/pages/devices_list_page.dart';
+import 'package:sathwik_app/features/home/bloc/connection_bloc.dart';
+import 'package:sathwik_app/features/home/bloc/recharge_bloc.dart';
 import 'package:sathwik_app/features/home/pages/home_page.dart';
 
 void main() async {
@@ -35,10 +37,17 @@ class MyApp extends StatelessWidget {
               create: (context) => AuthBloc(),
               child: const LoginPage(),
             ),
-        '/home': (context) => BlocProvider(
-              create: (context) => AuthBloc(),
-              child: HomePage(),
-            ),
+        '/home': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as ArgsBlu?;
+           return MultiBlocProvider(
+              providers: [
+                BlocProvider(create: (context) => AuthBloc(),),
+                BlocProvider(create:  (context) => ConnectionBloc(),),
+                BlocProvider(create: (context) => RechargeBloc(),),
+              ],
+              child: HomePage(address: args!.address,),
+            );
+        },
         '/blue': (context) => BlocProvider(
               create: (context) => DeviceBloc(),
               child: const DevicesListPage (),
