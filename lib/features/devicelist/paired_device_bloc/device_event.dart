@@ -8,3 +8,6 @@ class HandlePermissionEvent extends DeviceEvent{}
 
 
 class FetchBluetoothDevicesEvent extends DeviceEvent{}
+
+
+class CheckConnectionEvent extends DeviceEvent{}

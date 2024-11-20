@@ -9,10 +9,14 @@ final class PermissionErrorState extends DeviceState{}
 
 final class PermissionSuccessState extends DeviceState{}
 
+final class ConnectionSuccessState extends DeviceState{}
+
+final class ConnectionFailureState extends DeviceState{}
+
 final class LoadingState extends DeviceState{}
 
 final class FetchDeviceSuccesState extends DeviceState{
-  final List<BluetoothDevice>devices;
+  final List<BluetoothDevice> devices;
   FetchDeviceSuccesState({required this.devices});
 }
 

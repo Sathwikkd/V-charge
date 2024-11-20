@@ -31,7 +31,7 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionsState> {
         if (buffer.toString().endsWith("}")) {
           try {
             var res = jsonDecode(buffer.toString());
-            machineId = res["mid"];
+            machineId = res["mid"]; 
             complete.complete();
             await subscription?.cancel();
           } catch (e) {
