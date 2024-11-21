@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sathwik_app/core/common/custom_snackbar.dart';
+import 'package:sathwik_app/features/devicelist/pair_device_bloc/pair_device_bloc.dart';
 import 'package:sathwik_app/features/devicelist/paired_device_bloc/device_bloc.dart';
 import 'package:sathwik_app/features/devicelist/unpaired_device_bloc/unpaired_devices_bloc.dart';
 
@@ -55,19 +57,16 @@ class _DevicesListPageState extends State<DevicesListPage> {
                 FetchUnpairedDevices(),
               );
             }
-            if (state is FetchDeviceSuccesState) {
-              setState(() {
-                devices = state.devices;
-              });
-            }
           },
         ),
-        BlocListener<UnpairedDevicesBloc, UnpairedDevicesState>(
+        BlocListener<PairDeviceBloc, PairDeviceState>(
             listener: (context, state) {
-          if (state is FetchUnpairedDevicesSuccessState) {
-            setState(() {
-              upDevices = state.updevices;
-            });
+          if (state is PairingDeviceErrorState) {
+            Snackbar.showSnackbar(
+              message: state.message,
+              leadingIcon: Icons.error,
+              context: context,
+            );
           }
         }),
       ],
@@ -113,16 +112,23 @@ class _DevicesListPageState extends State<DevicesListPage> {
               const SizedBox(
                 height: 10,
               ),
-              devices.isEmpty
-                  ?const  Padding(
-                    padding:  EdgeInsets.all(10),
-                    child: Text("No Devices Found..."),
-                  )
-                  : ListView.builder(
+              BlocBuilder<DeviceBloc, DeviceState>(
+                builder: (context, state) {
+                  if (state is FetchDeviceSuccesState) {
+                    return ListView.builder(
                       itemBuilder: (context, index) {
                         return ListTile(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              "/connecttomachine",
+                              arguments: ArgsBlu(
+                                address: state.devices[index].address,
+                              ),
+                            );
+                          },
                           title: Text(
-                            devices[index].name.toString(),
+                            state.devices[index].name.toString(),
                             style: GoogleFonts.roboto(
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
@@ -130,7 +136,7 @@ class _DevicesListPageState extends State<DevicesListPage> {
                             ),
                           ),
                           subtitle: Text(
-                            devices[index].address,
+                            state.devices[index].address,
                             style: GoogleFonts.roboto(
                               color: Colors.grey.shade400,
                               fontWeight: FontWeight.normal,
@@ -147,11 +153,47 @@ class _DevicesListPageState extends State<DevicesListPage> {
                           ),
                         );
                       },
-                      itemCount: devices.length,
+                      itemCount: state.devices.length,
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
                       physics: const NeverScrollableScrollPhysics(),
+                    );
+                  } else if (state is FetchDeviceErrorState) {
+                    return Center(
+                      child: Container(
+                        margin: const EdgeInsets.all(20),
+                        child: Text(
+                          state.message,
+                          style: GoogleFonts.roboto(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w200,
+                          ),
+                        ),
+                      ),
+                    );
+                  } else if (state is LoadingState) {
+                    return Center(
+                      child: Container(
+                        margin: const EdgeInsets.all(20),
+                        child: const CircularProgressIndicator(
+                          strokeCap: StrokeCap.round,
+                          color: Colors.black,
+                        ),
+                      ),
+                    );
+                  }
+                  return Center(
+                    child: Container(
+                      margin: const EdgeInsets.all(20),
+                      child: const CircularProgressIndicator(
+                        strokeCap: StrokeCap.round,
+                        color: Colors.black,
+                      ),
                     ),
+                  );
+                },
+              ),
               const SizedBox(
                 height: 20,
               ),
@@ -166,16 +208,21 @@ class _DevicesListPageState extends State<DevicesListPage> {
               const SizedBox(
                 height: 10,
               ),
-              upDevices.isEmpty
-                  ?const Padding(
-                    padding:  EdgeInsets.all(10),
-                    child:  Text("No Devices Found..."),
-                  )
-                  : ListView.builder(
+              BlocBuilder<UnpairedDevicesBloc, UnpairedDevicesState>(
+                builder: (context, state) {
+                  if (state is FetchUnpairedDevicesSuccessState) {
+                    return ListView.builder(
                       itemBuilder: (context, index) {
                         return ListTile(
+                          onTap: () {
+                            BlocProvider.of<PairDeviceBloc>(context).add(
+                              PairingDeviceEvent(
+                                address: state.updevices[index].device.address,
+                              ),
+                            );
+                          },
                           title: Text(
-                            upDevices[index].device.name.toString(),
+                            state.updevices[index].device.name ?? "Undefined",
                             style: GoogleFonts.roboto(
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
@@ -183,7 +230,7 @@ class _DevicesListPageState extends State<DevicesListPage> {
                             ),
                           ),
                           subtitle: Text(
-                            upDevices[index].device.address,
+                            state.updevices[index].device.address,
                             style: GoogleFonts.roboto(
                               color: Colors.grey.shade400,
                               fontWeight: FontWeight.normal,
@@ -200,11 +247,47 @@ class _DevicesListPageState extends State<DevicesListPage> {
                           ),
                         );
                       },
-                      itemCount: upDevices.length,
+                      itemCount: state.updevices.length,
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
                       physics: const NeverScrollableScrollPhysics(),
+                    );
+                  } else if (state is FetchUnpairedDevicesErrorState) {
+                    return Center(
+                      child: Container(
+                        margin: const EdgeInsets.all(20),
+                        child: Text(
+                          state.message,
+                          style: GoogleFonts.roboto(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w200,
+                          ),
+                        ),
+                      ),
+                    );
+                  } else if (state is FetchUnpairedDevicesLoadingState) {
+                    return Center(
+                      child: Container(
+                        margin: const EdgeInsets.all(20),
+                        child: const CircularProgressIndicator(
+                          strokeCap: StrokeCap.round,
+                          color: Colors.black,
+                        ),
+                      ),
+                    );
+                  }
+                  return Center(
+                    child: Container(
+                      margin: const EdgeInsets.all(20),
+                      child: const CircularProgressIndicator(
+                        strokeCap: StrokeCap.round,
+                        color: Colors.black,
+                      ),
                     ),
+                  );
+                },
+              ),
             ],
           ),
         ),

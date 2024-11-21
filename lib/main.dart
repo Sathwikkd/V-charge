@@ -4,12 +4,12 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:sathwik_app/features/auth/bloc/auth_bloc.dart';
 import 'package:sathwik_app/features/auth/pages/login.dart';
+import 'package:sathwik_app/features/connect_to_machine_page/bloc/initial_transaction_bloc.dart';
+import 'package:sathwik_app/features/connect_to_machine_page/pages/connect_to_machine_page.dart';
+import 'package:sathwik_app/features/devicelist/pair_device_bloc/pair_device_bloc.dart';
 import 'package:sathwik_app/features/devicelist/paired_device_bloc/device_bloc.dart';
 import 'package:sathwik_app/features/devicelist/unpaired_device_bloc/unpaired_devices_bloc.dart';
 import 'package:sathwik_app/features/devicelist/pages/devices_list_page.dart';
-import 'package:sathwik_app/features/home/bloc/connection_bloc.dart';
-import 'package:sathwik_app/features/home/bloc/recharge_bloc.dart';
-import 'package:sathwik_app/features/home/pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,38 +32,33 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       // title: 'Recharge App 📱',
-      initialRoute: token == null ? '/login' : "/blue",
+      initialRoute: token == null ? '/login' : "/devicelist",
       routes: {
         '/login': (context) => BlocProvider(
               create: (context) => AuthBloc(),
               child: const LoginPage(),
             ),
-        '/home': (context) {
+        '/connecttomachine': (context) { 
           final args = ModalRoute.of(context)?.settings.arguments as ArgsBlu?;
           return MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (context) => AuthBloc(),
-              ),
-              BlocProvider(
-                create: (context) => ConnectionBloc(),
-              ),
-              BlocProvider(
-                create: (context) => RechargeBloc(),
-              ),
-            ],
-            child: HomePage(
-              address: args!.address,
-            ),
-          );
+              providers: [
+                BlocProvider(
+                  create: (context) => InitialTransactionBloc(),
+                ),
+              ],
+              child:ConnectToMachinePage(address: args!.address ,),
+            );
         },
-        '/blue': (context) => MultiBlocProvider(
+        '/devicelist': (context) => MultiBlocProvider(
               providers: [
                 BlocProvider(
                   create: (context) => DeviceBloc(),
                 ),
                 BlocProvider(
                   create: (context) => UnpairedDevicesBloc(),
+                ),
+                BlocProvider(
+                  create: (context) => PairDeviceBloc(),
                 ),
               ],
               child: const DevicesListPage(),

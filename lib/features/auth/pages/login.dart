@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sathwik_app/features/auth/bloc/auth_bloc.dart';
-import 'package:sathwik_app/features/home/pages/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -26,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
           });
         }
         if (state is AuthLoginSuccessState) {
-          Navigator.pushReplacementNamed(context, '/blue');
+          Navigator.pushReplacementNamed(context, '/devicelist');
         }
         if (state is AuthLoginFailureState) {
           ScaffoldMessenger.of(context)

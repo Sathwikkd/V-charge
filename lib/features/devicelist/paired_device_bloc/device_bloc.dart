@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sathwik_app/features/home/bloc/connection_bloc.dart';
 
 part 'device_event.dart';
 part 'device_state.dart';
