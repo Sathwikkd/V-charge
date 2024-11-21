@@ -10,6 +10,7 @@ import 'package:sathwik_app/features/devicelist/pair_device_bloc/pair_device_blo
 import 'package:sathwik_app/features/devicelist/paired_device_bloc/device_bloc.dart';
 import 'package:sathwik_app/features/devicelist/unpaired_device_bloc/unpaired_devices_bloc.dart';
 import 'package:sathwik_app/features/devicelist/pages/devices_list_page.dart';
+import 'package:sathwik_app/features/recharge/pages/recharge_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +35,9 @@ class MyApp extends StatelessWidget {
       // title: 'Recharge App 📱',
       initialRoute: token == null ? '/login' : "/devicelist",
       routes: {
+        '/recharge': (context) {
+          return const RechargePage();
+        },
         '/login': (context) => BlocProvider(
               create: (context) => AuthBloc(),
               child: const LoginPage(),

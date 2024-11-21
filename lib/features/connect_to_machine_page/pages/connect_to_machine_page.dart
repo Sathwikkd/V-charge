@@ -178,7 +178,9 @@ class _ConnectToMachinePageState extends State<ConnectToMachinePage>
                     height: 20,
                   ),
                   ElevatedButton(
-                    onPressed: isRecharge ? () {} : null,
+                    onPressed: isRecharge ? () {
+                      Navigator.pushNamed(context, "/recharge");
+                    } : null,
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.grey.shade700,
                       backgroundColor: Colors.black,
