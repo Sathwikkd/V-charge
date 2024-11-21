@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sathwik_app/core/common/custom_snackbar.dart';
@@ -14,18 +13,30 @@ class ConnectToMachinePage extends StatefulWidget {
   State<ConnectToMachinePage> createState() => _ConnectToMachinePageState();
 }
 
-class _ConnectToMachinePageState extends State<ConnectToMachinePage> with SingleTickerProviderStateMixin {
-  late Animation<double>? cardAnimationController;
+class _ConnectToMachinePageState extends State<ConnectToMachinePage>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _cardAnimationController;
   bool isCheckBluetoothButton = true;
   bool isRecharge = false;
   String machineId = "Please Place The Card";
   String balance = "";
   bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
-    cardAnimationController = AnimationController(vsync: this);
+    _cardAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1), // Smooth forward-only animation
+    );
   }
+
+  @override
+  void dispose() {
+    _cardAnimationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<InitialTransactionBloc, InitialTransactionState>(
@@ -37,19 +48,22 @@ class _ConnectToMachinePageState extends State<ConnectToMachinePage> with Single
             _isLoading = false;
             isRecharge = true;
             isCheckBluetoothButton = false;
+            _cardAnimationController.value = 0.7;
           });
+          // Play animation forward to 100%
         }
         if (state is FetchAllDetailsErrorState) {
           Snackbar.showSnackbar(
-              message: state.message,
-              leadingIcon: Icons.error,
-              context: context);
-              setState(() {
-                isCheckBluetoothButton = true;
-                _isLoading = false;
-              });
+            message: state.message,
+            leadingIcon: Icons.error,
+            context: context,
+          );
+          setState(() {
+            isCheckBluetoothButton = true;
+            _isLoading = false;
+          });
         }
-        if(state is FetchAllDetaailsLoadingState){
+        if (state is FetchAllDetaailsLoadingState) {
           setState(() {
             _isLoading = true;
           });
@@ -95,22 +109,23 @@ class _ConnectToMachinePageState extends State<ConnectToMachinePage> with Single
                   height: 30,
                 ),
                 Center(
-                  child:isRecharge ? Text(
-                    "₹ $balance",
-                    style: GoogleFonts.roboto(
-                      color: Colors.black,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ):null,
+                  child: isRecharge
+                      ? Text(
+                          "₹ $balance",
+                          style: GoogleFonts.roboto(
+                            color: Colors.black,
+                            fontSize: 28,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )
+                      : null,
                 ),
               ],
             ),
             Center(
-              child: LottieBuilder.asset(
+              child: Lottie.asset(
                 "assets/Animation.json",
-                controller: cardAnimationController,
-                
+                controller: _cardAnimationController,
               ),
             ),
             const SizedBox(
@@ -121,35 +136,49 @@ class _ConnectToMachinePageState extends State<ConnectToMachinePage> with Single
               child: Column(
                 children: [
                   ElevatedButton(
-                    onPressed:isCheckBluetoothButton? () {
-                      isCheckBluetoothButton = false;
-                      BlocProvider.of<InitialTransactionBloc>(context).add(
-                        FetchAllDetailsEvent(
-                          address: widget.address,
-                        ),
-                      );
-                    }:null,
+                    onPressed: isCheckBluetoothButton
+                        ? () {
+                            setState(() {
+                              isCheckBluetoothButton = false;
+                            });
+                            BlocProvider.of<InitialTransactionBloc>(context)
+                                .add(
+                              FetchAllDetailsEvent(
+                                address: widget.address,
+                              ),
+                            );
+                          }
+                        : null,
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.grey.shade800,
+                        foregroundColor: Colors.grey.shade800,
                         backgroundColor: Colors.black,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                         fixedSize:
                             Size(MediaQuery.of(context).size.width - 20, 60)),
-                    child:_isLoading == true ?const SizedBox(height: 30, width: 30, child: CircularProgressIndicator(color: Colors.white,strokeCap: StrokeCap.round,),): Text(
-                      "Check For Card",
-                      style: GoogleFonts.roboto(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            height: 30,
+                            width: 30,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeCap: StrokeCap.round,
+                            ),
+                          )
+                        : Text(
+                            "Check For Card",
+                            style: GoogleFonts.roboto(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
                   ElevatedButton(
-                    onPressed:isRecharge ? () {}: null,
+                    onPressed: isRecharge ? () {} : null,
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.grey.shade700,
                       backgroundColor: Colors.black,
