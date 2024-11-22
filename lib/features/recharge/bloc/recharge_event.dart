@@ -13,10 +13,12 @@ class RechargeCardEvent extends RechargeEvent {
   final String balance;
   final String address;
   final String amount;
+  final String mbalance;
   RechargeCardEvent({
     required this.machineID,
     required this.balance,
     required this.address,
     required this.amount,
+    required this.mbalance
   });
 }

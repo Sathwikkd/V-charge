@@ -48,7 +48,7 @@ class RechargeBloc extends Bloc<RechargeEvent, RechargeState> {
   Future<void> _rechargeCard(
       RechargeCardEvent event, Emitter<RechargeState> emit) async {
         emit(RechargeCardLoadingState());
-    if (event.amount.isEmpty) {
+    if (event.amount.isEmpty || int.parse(event.amount) > int.parse(event.mbalance)) {
       emit(RechargeCardErrorState(message: "Enter a valid amount"));
       return;
     }

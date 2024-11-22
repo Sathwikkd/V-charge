@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -143,6 +144,10 @@ class _RechargePageState extends State<RechargePage> {
                     right: 20,
                   ),
                   child: TextField(
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                    keyboardType: TextInputType.numberWithOptions(signed: false , decimal: false),
                     controller: _amountController,
                     cursorColor: Colors.black,
                     decoration: InputDecoration(
@@ -171,6 +176,7 @@ class _RechargePageState extends State<RechargePage> {
                   address: widget.address,
                   balance: widget.balance,
                   amount: _amountController.text,
+                  mbalance: mBalance,
                 ),
               );
             },
