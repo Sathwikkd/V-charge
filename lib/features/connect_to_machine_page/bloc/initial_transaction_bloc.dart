@@ -79,7 +79,7 @@ class InitialTransactionBloc
         emit(_mapErrorToState(errorStatus));
       }
     } catch (e) {
-      emit(FetchAllDetailsErrorState(message: "Try Connecting Again: $e"));
+      emit(FetchAllDetailsErrorState(message: "Try Connecting Again"));
     }
   }
 

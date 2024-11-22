@@ -20,6 +20,7 @@ class UnpairedDevicesBloc
       final completer = Completer<void>();
       final FlutterBluetoothSerial bluetoothInstance = FlutterBluetoothSerial.instance;
       List<BluetoothDiscoveryResult> upDevices = [];
+      List<BluetoothDiscoveryResult> ourDevices = [];
       List<String> address = [];
       await bluetoothInstance.cancelDiscovery();
       emit(FetchUnpairedDevicesLoadingState());
@@ -37,7 +38,12 @@ class UnpairedDevicesBloc
         emit(FetchUnpairedDevicesErrorState(message: "No Devices Found..."));
         return;
       }
-      emit(FetchUnpairedDevicesSuccessState(updevices: upDevices));
+      for(int i = 0 ; i < upDevices.length ; i++){
+        if(upDevices[i].device.name!.startsWith("VS")){
+          ourDevices.add(upDevices[i]);
+        }
+      }
+      emit(FetchUnpairedDevicesSuccessState(updevices: ourDevices));
     } catch (e) {
       emit(FetchUnpairedDevicesErrorState(message: e.toString()));
     }

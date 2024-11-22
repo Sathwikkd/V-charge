@@ -10,7 +10,9 @@ import 'package:sathwik_app/features/devicelist/pair_device_bloc/pair_device_blo
 import 'package:sathwik_app/features/devicelist/paired_device_bloc/device_bloc.dart';
 import 'package:sathwik_app/features/devicelist/unpaired_device_bloc/unpaired_devices_bloc.dart';
 import 'package:sathwik_app/features/devicelist/pages/devices_list_page.dart';
+import 'package:sathwik_app/features/recharge/bloc/recharge_bloc.dart';
 import 'package:sathwik_app/features/recharge/pages/recharge_page.dart';
+import 'package:sathwik_app/features/success_page/pages/success_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,22 +38,40 @@ class MyApp extends StatelessWidget {
       initialRoute: token == null ? '/login' : "/devicelist",
       routes: {
         '/recharge': (context) {
-          return const RechargePage();
+          final args =
+              ModalRoute.of(context)?.settings.arguments as RechargeArgs?;
+          return BlocProvider(
+            create: (context) => RechargeBloc(),
+            child: RechargePage(
+              balance: args!.balance,
+              machineId: args.machineID,
+              address: args.address,
+            ),
+          );
         },
         '/login': (context) => BlocProvider(
               create: (context) => AuthBloc(),
               child: const LoginPage(),
             ),
-        '/connecttomachine': (context) { 
+        '/connecttomachine': (context) {
           final args = ModalRoute.of(context)?.settings.arguments as ArgsBlu?;
           return MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (context) => InitialTransactionBloc(),
-                ),
-              ],
-              child:ConnectToMachinePage(address: args!.address ,),
-            );
+            providers: [
+              BlocProvider(
+                create: (context) => InitialTransactionBloc(),
+              ),
+            ],
+            child: ConnectToMachinePage(
+              address: args!.address,
+            ),
+          );
+        },
+        '/success': (context) {
+           final args = ModalRoute.of(context)?.settings.arguments as FinalArgs?;
+          return  SuccessPage(
+            message: args!.message,
+            state: args.state,
+          );
         },
         '/devicelist': (context) => MultiBlocProvider(
               providers: [

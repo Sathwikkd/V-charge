@@ -40,11 +40,17 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     try {
       final FlutterBluetoothSerial bluetoothSerial = FlutterBluetoothSerial.instance;
       final List<BluetoothDevice> bondedDevices = await bluetoothSerial.getBondedDevices();  
+      List<BluetoothDevice> ourDevice = [];
+      for(int i = 0 ; i < bondedDevices.length ; i++){
+        if(bondedDevices[i].name!.startsWith("VS")){
+          ourDevice.add(bondedDevices[i]);
+        }
+      }
       if (bondedDevices.isEmpty) {
         emit(FetchDeviceErrorState(message: "No Devices Found..."));
         return;
       }
-      emit(FetchDeviceSuccesState(devices: bondedDevices));
+      emit(FetchDeviceSuccesState(devices: ourDevice));
     } catch (e) {
       emit(FetchDeviceErrorState(message: "Failed to fetch Bluetooth devices: $e"));
     }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sathwik_app/core/common/custom_snackbar.dart';
 import 'package:sathwik_app/features/connect_to_machine_page/bloc/initial_transaction_bloc.dart';
+import 'package:sathwik_app/features/devicelist/pages/devices_list_page.dart';
 
 class ConnectToMachinePage extends StatefulWidget {
   final String address;
@@ -48,7 +50,7 @@ class _ConnectToMachinePageState extends State<ConnectToMachinePage>
             _isLoading = false;
             isRecharge = true;
             isCheckBluetoothButton = false;
-            _cardAnimationController.value = 0.7;
+            _cardAnimationController.value = 0.3;
           });
           // Play animation forward to 100%
         }
@@ -70,6 +72,7 @@ class _ConnectToMachinePageState extends State<ConnectToMachinePage>
         }
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           centerTitle: false,
           iconTheme: const IconThemeData(
@@ -178,9 +181,19 @@ class _ConnectToMachinePageState extends State<ConnectToMachinePage>
                     height: 20,
                   ),
                   ElevatedButton(
-                    onPressed: isRecharge ? () {
-                      Navigator.pushNamed(context, "/recharge");
-                    } : null,
+                    onPressed: isRecharge
+                        ? () {
+                            Navigator.pushNamed(
+                              context,
+                              "/recharge",
+                              arguments: RechargeArgs(
+                                address: widget.address,
+                                balance: balance,
+                                machineID: machineId,
+                              ),
+                            );
+                          }
+                        : null,
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.grey.shade700,
                       backgroundColor: Colors.black,
@@ -206,4 +219,15 @@ class _ConnectToMachinePageState extends State<ConnectToMachinePage>
       ),
     );
   }
+}
+
+class RechargeArgs {
+  final String machineID;
+  final String balance;
+  final String address;
+  RechargeArgs({
+    required this.balance,
+    required this.machineID,
+    required this.address,
+  });
 }
