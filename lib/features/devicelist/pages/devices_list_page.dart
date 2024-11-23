@@ -122,8 +122,9 @@ class _DevicesListPageState extends State<DevicesListPage> {
                             Navigator.pushNamed(
                               context,
                               "/connecttomachine",
-                              arguments: ArgsBlu(
+                              arguments: ArgsBlus(
                                 address: state.devices[index].address,
+                                mid: state.devices[index].name.toString(),
                               ),
                             );
                           },
@@ -296,7 +297,8 @@ class _DevicesListPageState extends State<DevicesListPage> {
   }
 }
 
-class ArgsBlu {
+class ArgsBlus {
   final String address;
-  ArgsBlu({required this.address});
+  final String mid;
+  ArgsBlus({required this.address , required this.mid});
 }

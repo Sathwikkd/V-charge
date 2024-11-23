@@ -10,6 +10,7 @@ import 'package:sathwik_app/features/devicelist/pair_device_bloc/pair_device_blo
 import 'package:sathwik_app/features/devicelist/paired_device_bloc/device_bloc.dart';
 import 'package:sathwik_app/features/devicelist/unpaired_device_bloc/unpaired_devices_bloc.dart';
 import 'package:sathwik_app/features/devicelist/pages/devices_list_page.dart';
+import 'package:sathwik_app/features/history/pages/history_page.dart';
 import 'package:sathwik_app/features/recharge/bloc/recharge_bloc.dart';
 import 'package:sathwik_app/features/recharge/pages/recharge_page.dart';
 import 'package:sathwik_app/features/success_page/pages/success_page.dart';
@@ -54,7 +55,7 @@ class MyApp extends StatelessWidget {
               child: const LoginPage(),
             ),
         '/connecttomachine': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments as ArgsBlu?;
+          final args = ModalRoute.of(context)?.settings.arguments as ArgsBlus?;
           return MultiBlocProvider(
             providers: [
               BlocProvider(
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
             ],
             child: ConnectToMachinePage(
               address: args!.address,
+              mid: args.mid,
             ),
           );
         },

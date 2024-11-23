@@ -6,10 +6,14 @@ import 'package:lottie/lottie.dart';
 import 'package:sathwik_app/core/common/custom_snackbar.dart';
 import 'package:sathwik_app/features/connect_to_machine_page/bloc/initial_transaction_bloc.dart';
 import 'package:sathwik_app/features/devicelist/pages/devices_list_page.dart';
+import 'package:sathwik_app/features/history/bloc/history_bloc.dart';
+import 'package:sathwik_app/features/history/pages/history_page.dart';
 
 class ConnectToMachinePage extends StatefulWidget {
   final String address;
-  const ConnectToMachinePage({super.key, required this.address});
+  final String mid;
+  const ConnectToMachinePage(
+      {super.key, required this.address, required this.mid});
 
   @override
   State<ConnectToMachinePage> createState() => _ConnectToMachinePageState();
@@ -74,6 +78,22 @@ class _ConnectToMachinePageState extends State<ConnectToMachinePage>
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BlocProvider(
+                                create: (context) => HistoryBloc(),
+                                child: HistoryPage(machineId: widget.mid),
+                              )));
+                },
+                icon: const Icon(
+                  Icons.history,
+                  color: Colors.white,
+                )),
+          ],
           centerTitle: false,
           iconTheme: const IconThemeData(
             color: Colors.white,
